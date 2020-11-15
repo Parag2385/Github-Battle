@@ -2,22 +2,26 @@ import React from 'react'
 import PropType from 'prop-types'
 import {fetchPopularRepos} from '../utils/api'
 import {FaUser, FaStar, FaCodeBranch, FaExclamationTriangle} from 'react-icons/fa'
+import Card from './Card'
+import Loading from './Loading'
+import ToolTip from './Tooltip'
 
 function LanguageNav({selected, onUpdateLanguage}){
     const languages = ['All', 'JavaScript', 'Ruby', 'Java', 'CSS', 'Python']
-    console.log(`lang: ${selected}`)
+    
     return(
         <ul className='flex-center'>
-            {languages.map((ln) =>(
-                <li key={ln}>
-                    <button className='btn-clear nav-link'
-                    style = {ln === selected ? {color:'rgb(187, 16, 31)'}: {color:'rgb(0, 0, 0)'}}
-                    onClick={() => onUpdateLanguage(ln)}>
-                        {ln}
-                    </button>
-                </li>
-            ))}
-        </ul>
+        {languages.map((language) => (
+          <li key={language}>
+            <button
+              className='btn-clear nav-link'
+              style={language === selected ? { color: 'rgb(187, 46, 31)' } : null}
+              onClick={() => onUpdateLanguage(language)}>
+              {language}
+            </button>
+          </li>
+        ))}
+      </ul>
     )
 }
 
@@ -34,34 +38,38 @@ function ReposGrid({repos}){
                 const {login, avatar_url} = owner
 
                 return(
-                    <li key='html_url' className='card bg-light'>
-                        <h4 className='header-lg center-text'>
-                            #{index + 1}
-                        </h4>
-                        <img className='avatar' src={avatar_url} alt={`Avatar for ${login}`}/>
-                        <h2 className='center-text'>
-                            <a className='link' href={html_url}>{login}</a>
-                        </h2>
-                        <ul className='card-list'>
-                            <li>
-                                <FaUser color='rgb(255, 191,116)' size={22}/>
-                                <a href={`https://github.com/${login}`}>
-                                    {login}
-                                </a>
+                    <li key='html_url' >
+
+                        <Card
+                            header={`#${index + 1}`}
+                            avatar={avatar_url}
+                            href={html_url}
+                            name={name}
+                        >
+                            <ul className='card-list'>
+                                <li>
+                                 <ToolTip text="Github Username">
+                                        <FaUser color='rgb(255, 191,116)' size={22} />
+                                        <a href={`https://github.com/${login}`}>
+                                            {login}
+                                        </a>
+                                    </ToolTip>
+                                </li>
+                                <li>
+                                    <FaStar color='rgb(255, 215, 0)' size={22} />
+                                    {stargazers_count.toLocaleString()} stars
                             </li>
-                            <li>
-                                <FaStar color='rgb(255, 215, 0)' size={22}/>
-                                {stargazers_count.toLocaleString()} stars
+                                <li>
+                                    <FaCodeBranch color='rgb(129, 195, 245)' size={22} />
+                                    {forks.toLocaleString()} forks
                             </li>
-                            <li>
-                                <FaCodeBranch color='rgb(129, 195, 245)' size={22}/>
-                                {forks.toLocaleString()} forks
+                                <li>
+                                    <FaExclamationTriangle color='rgb(241, 138, 147)' size={22} />
+                                    {open_issues.toLocaleString()} open issues
                             </li>
-                            <li>
-                                <FaExclamationTriangle color='rgb(241, 138, 147)' size={22}/>
-                                {open_issues.toLocaleString()} open issues
-                            </li>
-                        </ul>
+                            </ul>
+
+                        </Card>
                     </li>
                 )
             })}
@@ -133,7 +141,7 @@ export default class Popular extends React.Component{
                     onUpdateLanguage ={this.updateLanguage}
                 />
 
-                {this.isLoading() && <p>LOADING</p>}
+                {this.isLoading() && <Loading text='Fetching Repos'/>}
 
                 {error && <p className='center-text error'>{error}</p>}
 
