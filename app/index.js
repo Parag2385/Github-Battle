@@ -15,17 +15,13 @@ import {
 
 class App extends React.Component{
 
-    constructor(props){
-        super(props)
-
-        this.state ={
-            theme: 'light',
-            toggleTheme: () =>{
-                // console.log(`theme: ${theme}`)
-                this.setState(({theme}) =>({
-                    theme: theme === 'light' ? 'dark' : 'light'
-                }))
-            }
+    state ={
+        theme: 'light',
+        toggleTheme: () =>{
+            // console.log(`theme: ${theme}`)
+            this.setState(({theme}) =>({
+                theme: theme === 'light' ? 'dark' : 'light'
+            }))
         }
     }
 
